@@ -240,15 +240,18 @@ DUK_LOCAL void duk__strcache_scan_char2byte_wtf8_backwards_2(duk_hthread *thr,
 
 	DUK_DD(DUK_DDPRINT("scan backwards %ld codepoints", (long) left));
 	while (DUK_LIKELY(left >= 4)) {
-		/* In backwards direction we scan byte by byte so with left >= 4
-		 * it's safe to unroll by 4.
+		/* Maximum leftadj is 2 (a non-BMP lead byte counts as two char
+		 * units) so with left >= 4 it's safe to unroll by 2, matching
+		 * the forward scan below.  Unrolling by 4 here used to assume
+		 * each byte reduces 'left' by at most 1, which doesn't hold for
+		 * non-BMP lead bytes; two of those in the same unrolled batch
+		 * can reduce 'left' by 4 with two byte reads still pending,
+		 * underflowing 'left' (it's unsigned) and turning the loop into
+		 * an unbounded scan straight past the start of the string's
+		 * heap allocation.
 		 */
 		duk_uint8_t t;
 
-		t = *(--p);
-		left -= duk__strcache_wtf8_leftadj_lookup[t];
-		t = *(--p);
-		left -= duk__strcache_wtf8_leftadj_lookup[t];
 		t = *(--p);
 		left -= duk__strcache_wtf8_leftadj_lookup[t];
 		t = *(--p);

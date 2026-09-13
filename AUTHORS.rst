@@ -119,6 +119,7 @@ bugs, provided ideas, etc; roughly in order of appearance):
 * Unamer (https://github.com/unamer)
 * Karl Dahlke (eklhad@gmail.com)
 * https://github.com/k3a
+* Afonso Januário (https://github.com/afonsojanu)
 
 If you are accidentally missing from this list, send me an e-mail
 (``sami.vaarala@iki.fi``) and I'll fix the omission.
